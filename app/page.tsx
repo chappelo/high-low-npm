@@ -12,6 +12,10 @@ export default function Home() {
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [highScore, setHighScore] = useState(0);
+  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+  const [revealedPackages, setRevealedPackages] = useState<Set<string>>(
+    new Set()
+  );
 
   const refreshPackages = () => {
     setCurrentPackageName(nextPackageName);
@@ -30,6 +34,13 @@ export default function Home() {
     setGameOver(false);
     setCurrentPackageName(firstPackageName);
     setNextPackageName(secondPackageName);
+  };
+
+  const restartGame = () => {
+    startGame();
+    setIsCorrect(null);
+    // wip
+    setRevealedPackages(new Set());
   };
 
   useEffect(() => {
@@ -51,6 +62,10 @@ export default function Home() {
       }}
     >
       <Aside
+        revealedPackages={revealedPackages}
+        setRevealedPackages={setRevealedPackages}
+        isCorrect={isCorrect}
+        setIsCorrect={setIsCorrect}
         current={currentPackageName}
         next={nextPackageName}
         refreshPackages={refreshPackages}
@@ -65,8 +80,7 @@ export default function Home() {
       <Modal
         title="Game Over!"
         open={gameOver}
-        onOk={startGame}
-        onCancel={startGame}
+        onOk={restartGame}
         okText="Play Again"
       >
         <p>Your final score: {score}</p>
